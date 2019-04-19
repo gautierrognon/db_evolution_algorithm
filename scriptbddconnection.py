@@ -28,21 +28,13 @@ def show_bdd_evolution(username, passwrd, host_ip, port_number, database_name):
         plt.rc('legend', fontsize=15)
         
 
-        #tab that will be save in the txt (names,size and size(pretty))
-        tab_save_name = []
-        tab_save_size = []
-        tab_save_size_pretty = []
+        #tab that will be save in the txt (names,size and size(pretty)
 
         # for each table 
         for row in record:
         	database_size = row[3]
-        	#print table name and size just a check to see if it goes through every table
-        	print(row[0] , row[1], row[2])
         	#we store tables name for later use
         	table_name = str(row[0])
-        	tab_save_name.append(str(row[0]))
-        	tab_save_size_pretty.append(str(row[1]))
-        	tab_save_size.append(row[2])
         	#for non_history table
         	if '__history' not in table_name:
         		query = "SELECT create_date::date, count(id) FROM %s \
@@ -105,7 +97,7 @@ if __name__ == '__main__':
 
  #    #test
 	# user = "postgres"
-	# password= "postgres"S
+	# password= "postgres"
 	# host = "127.0.0.1"
 	# port = "5432"
 	# base = "restored_database"
