@@ -1,0 +1,19 @@
+database name : restored_database
+database total size: 1709 MB
+
+
+commission , 324 MB , 339918848 bytes
+account_move_line , 267 MB , 280412160 bytes
+account_invoice_line , 149 MB , 156188672 bytes
+account_invoice_line_detail , 132 MB , 138665984 bytes
+event_log , 93 MB , 97935360 bytes
+account_move , 85 MB , 89432064 bytes
+account_invoice , 63 MB , 66527232 bytes
+contract_premium__history , 38 MB , 40337408 bytes
+account_payment , 36 MB , 37404672 bytes
+contract__history , 28 MB , 29564928 bytes
+ir_attachment , 25 MB , 26542080 bytes
+res_user_connection , 25 MB , 25894912 bytes
+contract_invoice , 23 MB , 23756800 bytes
+account_invoice_tax , 22 MB , 23355392 bytes
+account_invoice_line_account_tax , 21 MB , 21618688 bytes

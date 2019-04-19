@@ -24,6 +24,7 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
         #plot
         fig = plt.figure()
         ax = fig.add_subplot(111)
+        
 
         #tab that will be save in the txt (names,size and size(pretty))
         tab_save_name = []
@@ -40,14 +41,18 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
         	tab_save_name.append(str(row[0]))
         	tab_save_size_pretty.append(str(row[1]))
         	tab_save_size.append(str(row[2]))
-        	#select all create_date from each table
-
-         	column = 'create_date' #if '__history' not in table_name else 'write_date'
+        	#for non_history table
+        	if '__history' not in table_name:
+        		query = "SELECT create_date::date, count(id) FROM %s \
+        		group by create_date::date ORDER BY create_date::date" % (table_name)
         	
-        	print(table_name)
-        	query = 'select %s::date, count(id) FROM %s group by %s::date ORDER BY %s::date' % (column, table_name, column,
-        		column)
-        	cursor.execute(query,)
+
+        	else:
+        		query = "SELECT COALESCE(write_date, create_date)::date, count(id) \
+        		FROM %s GROUP BY COALESCE(write_date, create_date)::date \
+        		ORDER BY COALESCE(write_date,create_date)::date" % (table_name)
+
+        	cursor.execute(query)
         	create_dates = cursor.fetchall()
         	#tabs to store values
         	tab_date = []
@@ -67,8 +72,7 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
         		count_bytes = (count*nb_tot_bytes)/count_tot
         		tab_size.append(count_bytes)
 
-        	#plot the two array
-        	ax.plot(tab_date, tab_size, label=table_name)
+        	ax.plot(tab_date, tab_size, label= table_name)
 
 
         #define color,legend and label for the plot
@@ -90,19 +94,6 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
         for i in range(len(tab_save_name)):
         	info_file.write(tab_save_name[i]+" , "+tab_save_size_pretty[i]+" , "+tab_save_size[i]+" bytes\n")
         info_file.close()
-
-        #message for html file
-        message = """<html>
-        <head></head>
-        <body>
-        <div> <img src="%s.jpg" alt="database plot"> </div>
-        </body>
-        </html>""" % database_name
-        #create a html file that will open the saved plot and informations
-        html_file = open(database_name+".html","w")
-        html_file.write(message)
-        html_file.close()
-        webbrowser.open_new_tab(database_name+'.html')
 
         
     except (Exception, psycopg2.Error) as error :
