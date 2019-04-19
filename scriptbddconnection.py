@@ -118,4 +118,4 @@ if __name__ == '__main__':
     #parser.add_argument("port")
     #parser.add_argument("base")
     #args = parser.parse_args()
-    #connect_to_bdd(*args)
+    #connect_to_bdd(args.user,args.password,args.host,args.port,args.base)
