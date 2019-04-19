@@ -24,6 +24,8 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
         #plot
         fig = plt.figure()
         ax = fig.add_subplot(111)
+        plt.rc('font', size=9)
+        plt.rc('legend', fontsize=15)
         
 
         #tab that will be save in the txt (names,size and size(pretty))
@@ -40,7 +42,7 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
         	table_name = str(row[0])
         	tab_save_name.append(str(row[0]))
         	tab_save_size_pretty.append(str(row[1]))
-        	tab_save_size.append(str(row[2]))
+        	tab_save_size.append(row[2])
         	#for non_history table
         	if '__history' not in table_name:
         		query = "SELECT create_date::date, count(id) FROM %s \
@@ -74,26 +76,18 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
 
         	ax.plot(tab_date, tab_size, label= table_name)
 
-
         #define color,legend and label for the plot
         colormap = plt.cm.gist_ncar   
         colors = [colormap(i) for i in np.linspace(0, 1,len(ax.lines))]
         for i,j in enumerate(ax.lines):
         	j.set_color(colors[i])
         #set label and title
-        ax.set(xlabel='date',ylabel='size', title = database_name)
+        ax.set(ylabel='size', title = database_name + ": "+database_size)
         #legend
         ax.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
         #save plot with the table name as png
         fig.savefig(database_name +".png", bbox_inches='tight')
-
-
-        #save the data and informations in a text file
-        info_file = open(database_name+"_info","w")
-        info_file.write("database name : " + database_name + "\ndatabase total size: " + database_size +"\n\n\n")
-        for i in range(len(tab_save_name)):
-        	info_file.write(tab_save_name[i]+" , "+tab_save_size_pretty[i]+" , "+tab_save_size[i]+" bytes\n")
-        info_file.close()
 
         
     except (Exception, psycopg2.Error) as error :
