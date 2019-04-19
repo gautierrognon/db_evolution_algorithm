@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import webbrowser
 import numpy as np
 
-def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
+def show_bdd_evolution(username, passwrd, host_ip, port_number, database_name):
     try:
         connection = psycopg2.connect(user = username,password = passwrd, host = host_ip, port = port_number, database = database_name)
 
@@ -103,19 +103,21 @@ def show_bdd_increase (username, passwrd, host_ip, port_number, database_name):
 
 if __name__ == '__main__':
 
+ #    #test
+	# user = "postgres"
+	# password= "postgres"S
+	# host = "127.0.0.1"
+	# port = "5432"
+	# base = "restored_database"
+	# show_bdd_increase(user,password,host,port,base)
 
-	user = "postgres"
-	password= "postgres"
-	host = "127.0.0.1"
-	port = "5432"
-	base = "restored_database"
-	show_bdd_increase(user,password,host,port,base)
 
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("user")
-    #parser.add_argument("password")
-    #parser.add_argument("host")
-    #parser.add_argument("port")
-    #parser.add_argument("base")
-    #args = parser.parse_args()
-    #connect_to_bdd(args.user,args.password,args.host,args.port,args.base)
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("user")
+    parser.add_argument("password")
+    parser.add_argument("host")
+    parser.add_argument("port")
+    parser.add_argument("base")
+    args = parser.parse_args()
+    show_bdd_evolution(args.user,args.password,args.host,args.port,args.base)
