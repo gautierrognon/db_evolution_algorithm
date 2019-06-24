@@ -35,9 +35,12 @@ def bdd_connection(username, passwrd, host_ip, port_number, database_name):
         save_in_csv(database_name,table_name,table_size_tot,date,table_size)
         print("data saved")
 
-        custom_my_plot(ax1, title_name = "{0}: {1}".format(database_name, database_size))
-        custom_my_plot(ax2, title_name = "{0}: {1}".format(ratio_table_name,ratio_table_size))
-        custom_my_plot(ax3, title_name = "ratio between {0} tables and {1}".format(database_name, ratio_table_name))
+        label_text = "This graphic shows the evolution (in number of bytes of each table).".format(database_name)
+        custom_my_plot(ax1, label_text, graphic_title = "Evolution of the size of {0}'s tables. Database_size: {1}".format(database_name, database_size))
+        label_text = "This graphic shows the evolution of the table {0} (in number of bytes).".format(ratio_table_name)
+        custom_my_plot(ax2, label_text, graphic_title= "graphic fo the table {0}. Table size: {1}".format(ratio_table_name,ratio_table_size))
+        label_text = "This graphic shows the ratio (divide each table size by the {0} size) \n between {1} tables and the {0} table ".format(ratio_table_name, database_name)
+        custom_my_plot(ax3, label_text, graphic_title = "ratio between {0} tables and {1}".format(database_name, ratio_table_name))
         print("custom plot ok")
 
         save_plot(fig1,database_name)
@@ -192,18 +195,19 @@ def init_plot():
     return fig, ax
 
 #plot data
-def my_plotter(ax,tab_date,tab_size, table_name):
-    ax.plot(tab_date, tab_size, label=table_name)
+def my_plotter(ax,data1,data2, table_name):
+    ax.plot(data1, data2, label=table_name)
 
 #custom lines color, label and title, legend
-def custom_my_plot(ax, title_name):
+def custom_my_plot(ax, text, graphic_title):
     #color plot lines
     colormap = plt.cm.gist_ncar
     colors=[colormap(i) for i in np.linspace(0, 1, len(ax.lines))]
     for i,j in enumerate(ax.lines):
             j.set_color(colors[i])
+    ax.set_xlabel(text)
     #set graphic's label and title
-    ax.set(ylabel='size', title= title_name)
+    ax.set(ylabel='size', title= graphic_title)
     #graphic legend
     ax.legend(bbox_to_anchor=(1.05,1),loc=2, borderaxespad=0.)
 
