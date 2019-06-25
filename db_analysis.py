@@ -35,12 +35,13 @@ def bdd_connection(username, passwrd, host_ip, port_number, database_name):
         save_in_csv(database_name,table_name,table_size_tot,date,table_size)
         print("data saved")
 
+        #customize each graphic with title, description, axes label etc
         label_text = "This graphic shows the evolution (in number of bytes of each table).".format(database_name)
-        custom_my_plot(ax1, label_text, graphic_title = "Evolution of the size of {0}'s tables. Database_size: {1}".format(database_name, database_size))
+        custom_my_plot(ax1, label_text,legend = True, graphic_title = "Evolution of {0}'s tables. \nDatabase_size: {1}".format(database_name, database_size))
         label_text = "This graphic shows the evolution of the table {0} (in number of bytes).".format(ratio_table_name)
-        custom_my_plot(ax2, label_text, graphic_title= "graphic fo the table {0}. Table size: {1}".format(ratio_table_name,ratio_table_size))
-        label_text = "This graphic shows the ratio (divide each table size by the {0} size) \n between {1} tables and the {0} table ".format(ratio_table_name, database_name)
-        custom_my_plot(ax3, label_text, graphic_title = "ratio between {0} tables and {1}".format(database_name, ratio_table_name))
+        custom_my_plot(ax2, label_text, legend = False, graphic_title= "Graphic of the table {0}. \nTable size: {1}".format(ratio_table_name,ratio_table_size))
+        label_text = "This graphic shows the ratio (each table size are divided by the number of {0}).".format(ratio_table_name)
+        custom_my_plot(ax3, label_text, legend = True, graphic_title = "Ratio between {0} tables and {1}".format(database_name, ratio_table_name))
         print("custom plot ok")
 
         save_plot(fig1,database_name)
@@ -94,6 +95,7 @@ def data_processing(cursor, data1, data2,database_name,ax1,ax2, ax3):
 
     	tab_size_plot = []
     	tab_date_plot = []
+        tab_nb_elem = []
         name = str(row[0])
         #size total of each table "human readable"
         size_tot = row[1]
@@ -125,6 +127,7 @@ def data_processing(cursor, data1, data2,database_name,ax1,ax2, ax3):
 
         for row in create_dates:
             count_elem = count_elem + row[1]
+            tab_nb_elem.append(count_elem)
             count_bytes = (count_elem*nb_total_bytes)/nb_tot_elem
             tab_date.append(row[0])
             tab_size.append(count_bytes)
@@ -137,14 +140,13 @@ def data_processing(cursor, data1, data2,database_name,ax1,ax2, ax3):
         label = "{0} : {1}%".format(name,tab_percentage)
 
         if name != ratio_table_name :
-            
             my_plotter(ax1,tab_date_plot,tab_size_plot,label)
             tab_ratio = make_ratio(tab_date_plot,tab_size_plot,number_by_dates)
             my_plotter(ax3,tab_date_plot,tab_ratio,label)
 
         else :
             my_plotter(ax2,tab_date_plot,tab_size_plot,label)
-            number_by_dates = create_all_dates_index(tab_date_plot,tab_size_plot)
+            number_by_dates = create_all_dates_index(tab_date_plot,tab_nb_elem)
 
     return tab_date, tab_size, table_name, table_size_tot, database_size
 
@@ -199,7 +201,7 @@ def my_plotter(ax,data1,data2, table_name):
     ax.plot(data1, data2, label=table_name)
 
 #custom lines color, label and title, legend
-def custom_my_plot(ax, text, graphic_title):
+def custom_my_plot(ax, text, legend, graphic_title):
     #color plot lines
     colormap = plt.cm.gist_ncar
     colors=[colormap(i) for i in np.linspace(0, 1, len(ax.lines))]
@@ -209,7 +211,8 @@ def custom_my_plot(ax, text, graphic_title):
     #set graphic's label and title
     ax.set(ylabel='size', title= graphic_title)
     #graphic legend
-    ax.legend(bbox_to_anchor=(1.05,1),loc=2, borderaxespad=0.)
+    if legend:
+        ax.legend(bbox_to_anchor=(1.05,1),loc=2, borderaxespad=0.)
 
 #save the plot
 def save_plot(fig,file_name):
