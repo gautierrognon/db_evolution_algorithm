@@ -3,8 +3,8 @@ import psycopg2
 import csv
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 from datetime import timedelta, date
+
 #we want the N biggest table in the data base
 N = 15
 ratio_table_name = 'contract'
@@ -142,7 +142,7 @@ def data_processing(cursor, data1, data2,database_name,ax1,ax2, ax3):
         if name != ratio_table_name :
             my_plotter(ax1,tab_date_plot,tab_size_plot,label)
             tab_ratio = make_ratio(tab_date_plot,tab_size_plot,number_by_dates)
-            my_plotter(ax3,tab_date_plot,tab_ratio,label)
+            my_log_plotter(ax3,tab_date_plot,tab_ratio,label)
 
         else :
             my_plotter(ax2,tab_date_plot,tab_size_plot,label)
@@ -200,11 +200,16 @@ def init_plot():
 def my_plotter(ax,data1,data2, table_name):
     ax.plot(data1, data2, label=table_name)
 
+#plot data using logarithmic scale
+def my_log_plotter(ax,data1,data2, table_name):
+    plt.yscale('log')
+    ax.plot(data1, data2, label=table_name)
+
 #custom lines color, label and title, legend
 def custom_my_plot(ax, text, legend, graphic_title):
     #color plot lines
     colormap = plt.cm.gist_ncar
-    colors=[colormap(i) for i in np.linspace(0, 1, len(ax.lines))]
+    colors=[colormap(i) for i in linspace(0, 1, len(ax.lines))]
     for i,j in enumerate(ax.lines):
             j.set_color(colors[i])
     ax.set_xlabel(text)
@@ -223,6 +228,14 @@ def get_percent(size,size_tot):
     percent = (size * 100)/size_tot
     return percent
 
+def linspace(start, stop, n):
+    if n == 1:
+        yield stop
+        return
+    h = (stop - start) / float(n-1)
+    for i in range (n):
+        yield start + h * i
+
 #make a html index to visualize data.
 def make_html_file(name_image1,name_image2,name_image3):
     html_str = """
@@ -233,8 +246,6 @@ def make_html_file(name_image1,name_image2,name_image3):
     Html_file= open("index.html","w")
     Html_file.write(html_str)
     Html_file.close()
-
-
 
 if __name__=='__main__':
 
